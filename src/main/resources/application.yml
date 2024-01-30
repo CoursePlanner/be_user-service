@@ -1,0 +1,22 @@
+server:
+  port: 9002
+  servlet:
+    context-path: "/api/user-service"
+
+spring:
+  application:
+    name: user-service
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      username: cp_user
+      password: rr9TXoAX6gqbEd8E
+      database: cp_user_db
+      authentication-database: admin
+      autoIndexCreation: true
+
+logging:
+  level:
+    root: ERROR
+    org.course_planner: INFO
