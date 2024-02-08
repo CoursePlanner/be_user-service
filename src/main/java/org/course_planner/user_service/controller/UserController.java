@@ -61,8 +61,7 @@ public class UserController {
         }
     }
 
-    @DeleteMapping(value = "/delete/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/delete/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> deleteUser(@PathVariable String userId) {
         if (userId == null || userId.trim().equalsIgnoreCase("")) {
             throw new UserException("User ID to modify is not provided!", HttpStatus.BAD_REQUEST);
