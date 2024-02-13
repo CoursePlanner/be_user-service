@@ -3,19 +3,20 @@ package org.course_planner.user_service.service;
 import org.course_planner.user_service.dto.GetAllUsersRequest;
 import org.course_planner.user_service.dto.GetAllUsersResponse;
 import org.course_planner.user_service.dto.UserDTO;
+import reactor.core.publisher.Mono;
 
 public interface UserService {
-    UserDTO createUser(UserDTO user);
+    Mono<UserDTO> createUser(UserDTO user);
 
-    UserDTO updateUser(UserDTO user);
+    Mono<UserDTO> updateUser(UserDTO user);
 
-    UserDTO getUserByEmailId(String emailId);
+    Mono<UserDTO> getUserByEmailId(String emailId);
 
-    UserDTO getUserByUserId(String userId);
+    Mono<UserDTO> getUserByUserId(String userId);
 
-    UserDTO getUserByUsername(String username);
+    Mono<UserDTO> getUserByUsername(String username);
 
-    Boolean delete(String userId);
+    Mono<Boolean> delete(String userId);
 
-    GetAllUsersResponse getAllUsers(GetAllUsersRequest request);
+    Mono<GetAllUsersResponse> getAllUsers(GetAllUsersRequest request);
 }

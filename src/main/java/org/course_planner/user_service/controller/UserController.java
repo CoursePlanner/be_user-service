@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 public class UserController {
@@ -20,7 +22,7 @@ public class UserController {
 
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO user) {
+    public ResponseEntity<Mono<UserDTO>> createUser(@RequestBody UserDTO user) {
         if (user.getUserId() != null) {
             throw new UserException("User ID is not acceptable!", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -38,7 +40,7 @@ public class UserController {
 
     @PutMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO user) {
+    public ResponseEntity<Mono<UserDTO>> updateUser(@RequestBody UserDTO user) {
         if (user.getUserId() == null || user.getUserId().trim().equalsIgnoreCase("")) {
             throw new UserException("User ID to modify is not provided!", HttpStatus.BAD_REQUEST);
         }
@@ -47,9 +49,9 @@ public class UserController {
 
     @GetMapping(value = "/retrieve", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDTO> getUser(@RequestHeader(value = "x-user-id", required = false) String userId,
-                                           @RequestHeader(value = "x-email-id", required = false) String emailId,
-                                           @RequestHeader(value = "x-username", required = false) String username) {
+    public ResponseEntity<Mono<UserDTO>> getUser(@RequestHeader(value = "x-user-id", required = false) String userId,
+                                                 @RequestHeader(value = "x-email-id", required = false) String emailId,
+                                                 @RequestHeader(value = "x-username", required = false) String username) {
         if (userId != null && !userId.trim().equalsIgnoreCase("")) {
             return new ResponseEntity<>(userService.getUserByUserId(userId), HttpStatus.OK);
         } else if (emailId != null && !emailId.isBlank()) {
@@ -62,7 +64,7 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/delete/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Boolean> deleteUser(@PathVariable String userId) {
+    public ResponseEntity<Mono<Boolean>> deleteUser(@PathVariable String userId) {
         if (userId == null || userId.trim().equalsIgnoreCase("")) {
             throw new UserException("User ID to modify is not provided!", HttpStatus.BAD_REQUEST);
         }
@@ -70,7 +72,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/users")
-    public ResponseEntity<GetAllUsersResponse> createUser(@RequestBody GetAllUsersRequest request) {
+    public ResponseEntity<Mono<GetAllUsersResponse>> createUser(@RequestBody GetAllUsersRequest request) {
         return new ResponseEntity<>(userService.getAllUsers(request), HttpStatus.OK);
     }
 }

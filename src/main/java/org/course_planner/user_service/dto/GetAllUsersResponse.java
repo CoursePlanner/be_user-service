@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.course_planner.user_service.document.UserDocument;
 import org.springframework.data.domain.Page;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,5 +20,13 @@ public class GetAllUsersResponse {
     public GetAllUsersResponse(Page<UserDocument> pageableResponse) {
         this.usersList = pageableResponse.getContent().stream().map(UserDTO::new).collect(Collectors.toList());
         this.pagination = new Pagination(pageableResponse);
+    }
+
+    public GetAllUsersResponse addUser(UserDocument userDocument) {
+        if (this.usersList == null) {
+            this.usersList = new LinkedList<>();
+        }
+        this.usersList.add(new UserDTO(userDocument));
+        return this;
     }
 }
