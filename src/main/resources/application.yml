@@ -10,8 +10,8 @@ spring:
     mongodb:
       host: localhost
       port: 27017
-      username: cp_user
-      password: rr9TXoAX6gqbEd8E
+      username: cp_mongo_user
+      password: hoyiAMud5UaZr2y
       database: cp_user_db
       authentication-database: admin
       autoIndexCreation: true
