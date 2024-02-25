@@ -12,7 +12,7 @@ spring:
       port: 27017
       username: cp_mongo_user
       password: hoyiAMud5UaZr2y
-      database: cp_user_db
+      database: cp_db
       authentication-database: admin
       autoIndexCreation: true
 
