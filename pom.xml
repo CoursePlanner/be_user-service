@@ -83,6 +83,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>cp_app</finalName>
 	</build>
 
 </project>
