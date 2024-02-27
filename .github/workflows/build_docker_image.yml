@@ -1,10 +1,10 @@
 name: Compile Project
 
 on:
-  push:
-    branches: [ "reactive/init" ]
-  pull_request:
-    branches: [ "reactive/init" ]
+#  push:
+#    branches: [ "reactive/init" ]
+#  pull_request:
+#    branches: [ "reactive/init" ]
   workflow_dispatch:
 
 jobs:
