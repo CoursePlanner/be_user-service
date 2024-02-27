@@ -45,12 +45,12 @@ jobs:
         username: ${{ env.DH_UNAME }}
         password: ${{ env.DH_TOKEN }}
 
-    - name: Generate Build Tag
-      id: date
-      run: echo "::set-output name=date::$(date + '%s')"
-
     - name: Extract Only Repo Name
       run: echo "REPO_NAME=$(echo ${{ github.repository }} | cut -d '/' -f 2)" >> $GITHUB_ENV
+
+    - name: Generate Build ID
+      id: date
+      run: echo "::set-output name=date::$(date +'%s')"
 
     - name: Build Image and Push
       uses: docker/build-push-action@v2
