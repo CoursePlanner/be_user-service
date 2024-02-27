@@ -21,12 +21,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
     - name: Set up JDK 21
       uses: actions/setup-java@v3
       with:
-        java-version: '17'
+        java-version: '21'
         distribution: 'temurin'
         cache: maven
+
     - name: Build with Maven
       run: mvn -B package -DskipTests=true --file pom.xml
 
@@ -48,8 +50,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: v1v3k6/cp_user-service_reactive:latest
-
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag be_user-service:$(date +%s)
+        tags: v1v3k6/cp_user-service_reactive:$(date +%s)
