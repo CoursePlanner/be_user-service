@@ -44,10 +44,14 @@ jobs:
       with:
         username: ${{ env.DH_UNAME }}
         password: ${{ env.DH_TOKEN }}
+
+    - name: Generate Build Tag
+      id: date
+      run: echo "::set-output name=date::$(date + '%s')"
         
     - name: Build Image and Push
       uses: docker/build-push-action@v2
       with:
         context: .
         push: true
-        tags: v1v3k6/cp_user-service_reactive:$(date +%s)
+        tags: v1v3k6/cp_user-service_reactive:${{ steps.date.outputs.date }}
