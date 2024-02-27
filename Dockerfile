@@ -1,7 +1,7 @@
 FROM eclipse-temurin:21-jdk-jammy
-RUN useradd cpuser
-COPY target/cp_app.jar /cp_app.jar
-RUN chmod a+x /cp_app.jar
+RUN useradd -m cpuser
+RUN chown -R cpuser:cpuser /home/cpuser
+COPY target/cp_app.jar /home/cpuser/code
 USER cpuser
-ENTRYPOINT [ "java", "-jar", "/cp_app.jar" ]
+ENTRYPOINT [ "java", "-jar", "/home/cpuser/cp_app.jar" ]
 EXPOSE 9002
