@@ -5,6 +5,7 @@ on:
     branches: [ "reactive/init" ]
   pull_request:
     branches: [ "reactive/init" ]
+  workflow_dispatch:
 
 jobs:
   build:
