@@ -12,6 +12,13 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    environment:
+      name: CoursePlanner_Env
+
+    env:
+      DH_UNAME: ${{ secrets.DH_UNAME }}
+      DH_TOKEN: ${{ secrets.DH_TOKEN }}
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 21
@@ -33,8 +40,8 @@ jobs:
     - name: Login to DockerHub
       uses: docker/login-action@v1
       with:
-        username: ${{ secrets.DH_UNAME }}
-        password: ${{ secrets.DH_TOKEN }}
+        username: ${{ env.DH_UNAME }}
+        password: ${{ env.DH_TOKEN }}
         
     - name: Build Image and Push
       uses: docker/build-push-action@v2
