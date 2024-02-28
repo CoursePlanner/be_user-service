@@ -8,12 +8,12 @@ spring:
     name: user-service
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      username: cp_mongo_user
-      password: hoyiAMud5UaZr2y
-      database: cp_db
-      authentication-database: admin
+      host: ${MONGODB_HOST:localhost}
+      port: ${MONGODB_PORT:27017}
+      username: ${MONGODB_USERNAME:cp_mongo_user}
+      password: ${MONGODB_PASSWORD:hoyiAMud5UaZr2y}
+      database: ${MONGODB_DB_NAME:cp_db}
+      authentication-database: ${MONGODB_AUTH_DB_NAME:admin}
       autoIndexCreation: true
 
 logging:
