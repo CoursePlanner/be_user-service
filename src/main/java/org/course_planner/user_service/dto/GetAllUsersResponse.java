@@ -15,11 +15,11 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class GetAllUsersResponse {
     List<UserDTO> usersList;
-    private Pagination pagination;
+    private UserPagination pagination;
 
     public GetAllUsersResponse(Page<UserDocument> pageableResponse) {
         this.usersList = pageableResponse.getContent().stream().map(UserDTO::new).collect(Collectors.toList());
-        this.pagination = new Pagination(pageableResponse);
+        this.pagination = new UserPagination(pageableResponse);
     }
 
     public GetAllUsersResponse addUser(UserDocument userDocument) {

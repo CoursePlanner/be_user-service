@@ -3,12 +3,11 @@ package org.course_planner.user_service.service;
 import org.course_planner.user_service.document.UserDocument;
 import org.course_planner.user_service.dto.GetAllUsersRequest;
 import org.course_planner.user_service.dto.GetAllUsersResponse;
-import org.course_planner.user_service.dto.Pagination;
 import org.course_planner.user_service.dto.UserDTO;
+import org.course_planner.user_service.dto.UserPagination;
 import org.course_planner.user_service.repository.UserRepository;
 import org.course_planner.utils.exceptions.UserException;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,11 +16,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -52,11 +47,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<UserDTO> updateUser(UserDTO user) {
         return passesPrelimChecks(user).filter(isValid -> {
-                    if (!isValid) {
-                        Mono.error(new UserException("Duplicate emailId or username provided!", HttpStatus.BAD_REQUEST));
-                    }
-                    return true;
-                }).then(userRepository.findById(user.getUserId())
+            if (!isValid) {
+                Mono.error(new UserException("Duplicate emailId or username provided!", HttpStatus.BAD_REQUEST));
+            }
+            return true;
+        }).then(userRepository.findById(user.getUserId())
                 .flatMap(fromDB -> {
                     boolean isUpdated = false;
                     if (user.getPassword() != null && !passwordEncoder.matches(user.getPassword(), fromDB.getPassword())) {
@@ -116,28 +111,38 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<GetAllUsersResponse> getAllUsers(GetAllUsersRequest request) {
-        if (!Pagination.isValidPaginationObj(request.getPagination())) {
-            request.setPagination(new Pagination());
-            request.getPagination().setPage(0);
+        if (!UserPagination.isValidPaginationObj(request.getPagination())) {
+            request.setPagination(new UserPagination());
+            request.getPagination().setPage(1);
             request.getPagination().setSize(10);
         }
 
-        return userRepository.findAll()
-                .buffer(request.getPagination().getSize(), request.getPagination().getPage() + 1)
-                .elementAt(request.getPagination().getPage(), new ArrayList<>())
-                .flatMap(userDocumentList -> {
-                    GetAllUsersResponse getAllUsersResponse = new GetAllUsersResponse();
-                    userDocumentList.stream().sorted(Comparator.comparing(UserDocument::getUpdatedOn).reversed())
-                            .forEach(getAllUsersResponse::addUser);
-                    return Mono.just(getAllUsersResponse);
-                });
+        GetAllUsersResponse response = new GetAllUsersResponse(new LinkedList<>(), null);
+
+        return userRepository.count().map(count -> {
+                    UserPagination pagination = new UserPagination();
+                    pagination.setTotalSize(Math.toIntExact(count));
+                    pagination.setSize(request.getPagination().getSize());
+                    pagination.setPage(request.getPagination().getPage());
+                    if (count > 0) {
+                        pagination.setTotalPages((int) (count / pagination.getSize()) + 1);
+                    } else {
+                        pagination.setTotalPages(1);
+                    }
+                    response.setPagination(pagination);
+                    return response;
+                }).thenMany(userRepository.findAllWithPagination(PageRequest.of(request.getPagination().getPage(),
+                                request.getPagination().getSize(), Sort.Direction.DESC, "createdOn"))
+                        .map(record -> response.getUsersList().add(new UserDTO(record))))
+                .then(Mono.just(response));
     }
-//
+
+    //
     private Mono<Boolean> passesPrelimChecks(UserDTO userDTO) {
         Flux<UserDocument> userDocuments = userRepository.findByUsernameOrEmailId(userDTO.getUsername(), userDTO.getEmailId());
         return userDocuments.any(document -> !(document.getUserId().equals(userDTO.getUserId())
-                    && (document.getUsername().equals(userDTO.getUsername())
-                    || document.getEmailId().equals(userDTO.getEmailId()))));
+                && (document.getUsername().equals(userDTO.getUsername())
+                || document.getEmailId().equals(userDTO.getEmailId()))));
 //        return userDocuments.any(document ->
 //            !document.getUserId().equals(userDTO.getUserId())
 //                        && (document.getUsername().equals(userDTO.getUsername())

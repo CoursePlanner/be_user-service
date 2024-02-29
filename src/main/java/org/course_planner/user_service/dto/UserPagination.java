@@ -8,20 +8,20 @@ import org.springframework.data.domain.Page;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Pagination {
+public class UserPagination {
     private Integer size;
     private Integer page;
     private Integer totalPages;
     private Integer totalSize;
 
-    public Pagination(Page<?> item) {
+    public UserPagination(Page<?> item) {
         this.size = item.getSize();
         this.page = item.getNumber();
         this.totalPages = item.getTotalPages();
         this.totalSize = Integer.parseInt(item.getTotalElements() + "");
     }
 
-    public static boolean isValidPaginationObj(Pagination pagination) {
+    public static boolean isValidPaginationObj(UserPagination pagination) {
         return pagination != null && (pagination.isInvalidInteger(pagination.getSize())
                 || pagination.isInvalidInteger(pagination.getPage()));
     }

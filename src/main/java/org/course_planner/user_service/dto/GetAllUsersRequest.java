@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetAllUsersRequest {
-    private Pagination pagination;
+    private UserPagination pagination;
 }
